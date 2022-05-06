@@ -7,6 +7,7 @@ Tested with:
 - [Mixxx](https://mixxx.org/) plus [MIDI Clock Output script](https://github.com/mixxxdj/mixxx/wiki/MIDI%20clock%20output)
 - [Teensy 2.0 board](https://www.pjrc.com/store/teensy.html)
 - WS2812b LED stripe (5m, 300 LEDS, 5V)
+- XONE:K2 Controller
 
 # Howto
 
