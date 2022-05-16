@@ -9,6 +9,8 @@
 #define STEPS_CONTROL   11
 #define FPS 50
 
+#define DEBUG false
+
 CRGB leds[NUMPIXELS];
 int delayval = 5;
 
@@ -30,7 +32,9 @@ unsigned long lastDePulse = 0;
 void setup()
 {
   FastLED.addLeds<NEOPIXEL, PIN>(leds, NUMPIXELS);
-  Serial.begin(9600);
+  if (DEBUG) {
+    Serial.begin(9600);
+  }
   pinMode(LED_BUILTIN, OUTPUT);
   usbMIDI.setHandleNoteOn(myNoteOn);
   usbMIDI.setHandleControlChange(myControlChange);
@@ -58,10 +62,10 @@ void myNoteOn(byte channel, byte note, byte velocity) {
   if (note == 50) {
     // Beat
     doPulse();
-    Serial.print(millis() - lastBeat);
+    if (DEBUG) Serial.print(millis() - lastBeat);
     lastBeat = millis();
     lastStep = lastBeat;
-    Serial.println(" beat");
+    if (DEBUG) Serial.println(" beat");
     return;
   }
   if (note == 52) {
@@ -106,11 +110,13 @@ void loop()
   const unsigned long stepLength = 60000/((bpm)*factor);
   if(lastStep + stepLength  < thisStep) {
     doPulse();
-    Serial.print(millis());
-    Serial.print(" stepLength: ");
-    Serial.print(stepLength);
-    Serial.print(" ");
-    Serial.println(thisStep-lastStep);
+    if (DEBUG) {
+      Serial.print(millis());
+      Serial.print(" stepLength: ");
+      Serial.print(stepLength);
+      Serial.print(" ");
+      Serial.println(thisStep-lastStep);
+    }
     lastStep = thisStep;
   }
   if(lastDePulse + (1000/100) < thisStep) {
@@ -125,20 +131,22 @@ void loop()
     frameCount++;
     if (lastFrameMeasure + 1000 < thisStep) {
       lastFrameMeasure = thisStep;
-      Serial.print(frameCount);
-      Serial.print(" fps | ");
-      // Serial.print(steps * 100 / 25);
-      // Serial.print(" steps * 100 / 25 | ");
-      // Serial.print((int) steps * 100 / 25);
-      // Serial.print("(int) steps * 100 / 25 | ");
-      // Serial.print((int) pow(2, (int) steps * 100 / 25));
-      // Serial.print("pow 2 (int) steps * 100 / 25 | ");
-      // Serial.print(steps);
-      // Serial.print(" steps | ");
-      Serial.print(factor);
-      Serial.print(" step factor | ");
-      Serial.print(bpm);
-      Serial.println(" bpm");
+      if (DEBUG) {
+        Serial.print(frameCount);
+        Serial.print(" fps | ");
+        // Serial.print(steps * 100 / 25);
+        // Serial.print(" steps * 100 / 25 | ");
+        // Serial.print((int) steps * 100 / 25);
+        // Serial.print("(int) steps * 100 / 25 | ");
+        // Serial.print((int) pow(2, (int) steps * 100 / 25));
+        // Serial.print("pow 2 (int) steps * 100 / 25 | ");
+        // Serial.print(steps);
+        // Serial.print(" steps | ");
+        Serial.print(factor);
+        Serial.print(" step factor | ");
+        Serial.print(bpm);
+        Serial.println(" bpm");
+      }
       frameCount = 0;
       color += 1;
     }
